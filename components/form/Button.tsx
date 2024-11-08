@@ -7,6 +7,7 @@ import {cn} from "@/lib/utils"
 import {SignInButton} from "@clerk/nextjs"
 import {FaRegHeart, FaHeart} from "react-icons/fa"
 import {LuTrash2, LuPenSquare} from "react-icons/lu"
+import {Sign} from "crypto"
 
 type btnSize = "default" | "lg" | "sm"
 
@@ -106,5 +107,16 @@ export const CardSubmitButton = ({isFavorite}: {isFavorite: boolean}) => {
         <FaRegHeart />
       )}
     </Button>
+  )
+}
+
+// Add To Cart Button khi CHƯA Sign In
+export const ProductSignInButton = () => {
+  return (
+    <SignInButton mode="modal">
+      <Button type="button" className="mt-8 capitalize">
+        sign in
+      </Button>
+    </SignInButton>
   )
 }

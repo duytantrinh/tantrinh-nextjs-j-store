@@ -1,24 +1,32 @@
 import BreadCrumbs from "@/components/single-product/BreadCrumbs"
-import {fetchSingleProduct} from "@/utils/actions"
+import {fetchSingleProduct, findExistingReview} from "@/utils/actions"
 import Image from "next/image"
 import {formatCurrency} from "@/utils/format"
 import FavoriteToggleButton from "@/components/products/FavoriteToggleButton"
 import AddToCart from "@/components/single-product/AddToCart"
 import ProductRating from "@/components/single-product/ProductRating"
+import ShareButton from "@/components/single-product/ShareButton"
+import ProductReviews from "@/components/reviews/ProductReviews"
+import SubmitReview from "@/components/reviews/SubmitReview"
+import {auth} from "@clerk/nextjs/server"
 
 export default async function SingleProductPage({
   params,
 }: {
   params: {productId: string}
 }) {
-  console.log(params)
   const product = await fetchSingleProduct(params.productId)
 
   if (!product) return "No product found..."
-  console.log(product)
 
   const {name, image, company, description, price} = product
   const dollarsAmount = formatCurrency(price)
+
+  // for _review function
+  const {userId} = auth()
+  const reviewDoesNotExist =
+    userId && !(await findExistingReview(userId, product.id))
+
   return (
     <section>
       <BreadCrumbs name={product?.name} />
@@ -38,7 +46,10 @@ export default async function SingleProductPage({
         <div>
           <div className="flex gap-x-8 items-center">
             <h1 className="capitalize text-3xl font-bold">{name}</h1>
-            <FavoriteToggleButton productId={params.productId} />
+            <div className="flex items-center gap-x-2">
+              <FavoriteToggleButton productId={params.productId} />
+              <ShareButton name={product.name} productId={params.productId} />
+            </div>
           </div>
           <ProductRating productId={params.productId} />
           <h4 className="text-xl mt-2">{company}</h4>
@@ -49,6 +60,11 @@ export default async function SingleProductPage({
           <AddToCart productId={params.productId} />
         </div>
       </div>
+
+      {/* // (_Review/Ratings) */}
+      <ProductReviews productId={params.productId} />
+
+      {reviewDoesNotExist && <SubmitReview productId={params.productId} />}
     </section>
   )
 }

@@ -1,6 +1,36 @@
-import {Button} from "@/components/ui/button"
-import React from "react"
+"use client"
+import {useState} from "react"
+import SelectProductAmount from "./SelectProductAmount"
+import {Mode} from "./SelectProductAmount"
+import FormContainer from "../form/FormContainer"
+import {SubmitButton} from "../form/Button"
+import {addToCartAction} from "@/utils/actions"
+import {useAuth} from "@clerk/nextjs"
+import {ProductSignInButton} from "../form/Button"
+import {Button} from "../ui/button"
 
 export default function AddToCart({productId}: {productId: string}) {
-  return <Button className="capitalize mt-8">Add To Cart</Button>
+  const [amount, setAmount] = useState(1)
+  const {userId} = useAuth() // get userId tai client component
+
+  return (
+    <div className="mt-4">
+      <SelectProductAmount
+        mode={Mode.SingleProduct}
+        amount={amount}
+        setAmount={setAmount}
+      />
+
+      {userId ? (
+        <FormContainer action={addToCartAction}>
+          <input type="hidden" name="productId" value={productId} />
+          <input type="hidden" name="amount" value={amount} />
+
+          <SubmitButton text="Add To Cart" className="mt-8" />
+        </FormContainer>
+      ) : (
+        <ProductSignInButton /> // chưa sign in sẽ phải sign in
+      )}
+    </div>
+  )
 }

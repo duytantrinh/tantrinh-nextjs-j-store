@@ -6,6 +6,8 @@ import Container from "@/components/global/Container"
 import Providers from "./providers"
 import {ClerkProvider} from "@clerk/nextjs"
 
+import Topheader from "@/components/Topheader/Topheader"
+
 const inter = Inter({subsets: ["latin"]})
 
 export const metadata: Metadata = {
@@ -23,6 +25,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ClerkProvider>
           <Providers>
+            <Topheader />
             <Navbar />
             <Container className="py-20">{children}</Container>
           </Providers>

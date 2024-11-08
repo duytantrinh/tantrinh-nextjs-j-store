@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* đoạn code này để ẩn thanh ngang doc khi scroll */
+body::-webkit-scrollbar {
+  display: none;
+  scroll-behavior: smooth;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
